@@ -17,6 +17,7 @@ namespace FunSharp.Common
 
     }
 
+
     [PublicAPI]
     public abstract class Option<T> : StructuralEquality<Option<T>>, IUnionType
     {

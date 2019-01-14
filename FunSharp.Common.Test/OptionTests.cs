@@ -19,6 +19,7 @@ namespace FunSharp.Common.Test
             return left.Equals(right);
         }
 
+
         [TestCase(null, ExpectedResult = "None")]
         [TestCase("A", ExpectedResult = "Some(A)")]
         public static string ToStringTests(string val)

@@ -14,11 +14,12 @@ namespace FunSharp.Common.Test
         [TestCase("A", "A", ExpectedResult = true, TestName = "Equals: Right A == Right A => true")]
         public static bool EqualsTests(object leftVal, object rightVal)
         {
-            var left = leftVal is int a ? Either<int, string>.Left(a) : Either<int, string>.Right((string)leftVal);
-            var right = rightVal is int b ? Either<int, string>.Left(b) : Either<int, string>.Right((string)rightVal);
+            var left = leftVal is int a ? Either<int, string>.Left(a) : Either<int, string>.Right((string) leftVal);
+            var right = rightVal is int b ? Either<int, string>.Left(b) : Either<int, string>.Right((string) rightVal);
 
             return left.Equals(right);
         }
+
 
         [TestCase(1, ExpectedResult = "Left(1)")]
         [TestCase("A", ExpectedResult = "Right(A)")]

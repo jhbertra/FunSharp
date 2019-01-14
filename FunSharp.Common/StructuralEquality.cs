@@ -11,27 +11,39 @@ namespace FunSharp.Common
 
         public bool Equals(StructuralEquality<T> other)
         {
-            return !(other is null)
-                && other.GetType() == this.GetType()
-                && this
-                    .GetFields()
-                    .Select(
-                        x =>
+            if (other is null)
+            {
+                return false;
+            }
+            else if (other.GetType() != this.GetType())
+            {
+                return false;
+            }
+            else
+            {
+                using (var enumerator1 = this.GetFields().GetEnumerator())
+                using (var enumerator2 = other.GetFields().GetEnumerator())
+                {
+                    var hasNext1 = enumerator1.MoveNext();
+                    var hasNext2 = enumerator2.MoveNext();
+
+                    while (hasNext1 || hasNext2)
+                    {
+                        var fieldValue1 = hasNext1 ? enumerator1.Current.FieldValue : null;
+                        var fieldValue2 = hasNext2 ? enumerator2.Current.FieldValue : null;
+    
+                        if (!object.Equals(fieldValue1, fieldValue2))
                         {
-                            var (_, fieldValue) = x;
-                            return fieldValue;
-                        })
-                    .Zip(
-                        other
-                            .GetFields()
-                            .Select(
-                                x =>
-                                {
-                                    var (_, fieldValue) = x;
-                                    return fieldValue;
-                                }),
-                        (a, b) => a.Equals(b))
-                    .Aggregate(true, (state, x) => state && x);
+                            return false;
+                        }
+                        
+                        hasNext1 = enumerator1.MoveNext();
+                        hasNext2 = enumerator2.MoveNext();
+                    }
+                }
+
+                return true;
+            }
         }
 
         public override bool Equals(object obj)
