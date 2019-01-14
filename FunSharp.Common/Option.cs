@@ -11,7 +11,7 @@ namespace FunSharp.Common
 
         [NotNull]
         public static Option<T> Some<T>([NotNull] T value) => Option<T>.Some(value);
-        
+
         [NotNull]
         public static Option<T> None<T>() => Option<T>.None;
 
@@ -22,14 +22,17 @@ namespace FunSharp.Common
     {
 
         [NotNull]
-        public static Option<T> Some([NotNull] T value) => new Some<T>(value);
+        public static Option<T> Some([NotNull] T value) => new SomeOption<T>(value);
 
         [NotNull]
-        public static Option<T> None => new None<T>();
+        public static Option<T> None => new NoneOption<T>();
 
         protected Option([NotNull] string tag)
         {
-            Tag = tag ?? throw new ArgumentNullException(nameof(tag));
+            if (string.IsNullOrWhiteSpace(tag))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(tag));
+
+            this.Tag = tag;
         }
 
         public string Tag { get; }
@@ -38,17 +41,17 @@ namespace FunSharp.Common
 
 
     [PublicAPI]
-    public sealed class Some<T> : Option<T>
+    public sealed class SomeOption<T> : Option<T>
     {
 
-        public Some([NotNull] T value) : base("Some")
+        public SomeOption([NotNull] T value) : base("Some")
         {
             if (value == null)
             {
                 throw new ArgumentNullException(nameof(value));
             }
 
-            Value = value;
+            this.Value = value;
         }
 
         [NotNull] public readonly T Value;
@@ -62,10 +65,10 @@ namespace FunSharp.Common
 
 
     [PublicAPI]
-    public sealed class None<T> : Option<T>
+    public sealed class NoneOption<T> : Option<T>
     {
 
-        public None() : base("None")
+        public NoneOption() : base("None")
         {
         }
 
