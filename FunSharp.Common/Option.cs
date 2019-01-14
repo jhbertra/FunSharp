@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 
 namespace FunSharp.Common
@@ -14,6 +15,13 @@ namespace FunSharp.Common
 
         [NotNull]
         public static Option<T> None<T>() => Option<T>.None;
+
+        public static Option<T> Choose<T>(params Option<T>[] options) =>
+            options.Aggregate(
+                Option<T>.None,
+                (state, x) => state || x);
+
+        public static Option<Unit> Guard(bool condition) => condition ? Option.Some<Unit>(default) : Option<Unit>.None;
 
     }
 
@@ -36,7 +44,16 @@ namespace FunSharp.Common
             this.Tag = tag;
         }
 
+        public bool IsEmpty => this is NoneOption<T>;
+
         public string Tag { get; }
+
+        public static Option<T> operator |(Option<T> a, Option<T> b) => a.IsEmpty ? b.IsEmpty ? None : b : a;
+
+        public static bool operator true(Option<T> a) => !a.IsEmpty;
+
+        public static bool operator false(Option<T> a) => a.IsEmpty;
+
 
     }
 

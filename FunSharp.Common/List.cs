@@ -60,6 +60,8 @@ namespace FunSharp.Common
             return $"[{string.Join(", ", this.Select(x => x.ToString()))}]";
         }
 
+        public bool IsEmpty => this is EmptyList<T>;
+
         protected override IEnumerable<(string FieldName, object FieldValue)> GetFields()
         {
             return this.Select((x, i) => ($"[{i}]", (object) x));

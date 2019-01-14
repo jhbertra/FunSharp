@@ -5,6 +5,7 @@ using JetBrains.Annotations;
 namespace FunSharp.Common
 {
 
+    [PublicAPI]
     public abstract class Either<TLeft, TRight> : StructuralEquality<Either<TLeft, TRight>>, IUnionType
     {
 
@@ -13,6 +14,8 @@ namespace FunSharp.Common
 
         [NotNull]
         public static Either<TLeft, TRight> Right([NotNull] TRight value) => new EitherRight<TLeft, TRight>(value);
+
+        public bool IsLeft => this is EitherLeft<TLeft, TRight>;
 
         protected Either([NotNull] string tag)
         {
@@ -27,6 +30,7 @@ namespace FunSharp.Common
     }
 
 
+    [PublicAPI]
     public sealed class EitherLeft<TLeft, TRight> : Either<TLeft, TRight>
     {
 
@@ -50,6 +54,7 @@ namespace FunSharp.Common
     }
 
 
+    [PublicAPI]
     public sealed class EitherRight<TLeft, TRight> : Either<TLeft, TRight>
     {
 
