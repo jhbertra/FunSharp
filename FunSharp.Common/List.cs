@@ -214,12 +214,6 @@ namespace FunSharp.Common
 
         //--------------------------------------------------
         /// <inheritdoc />
-        protected override IEnumerable<(string FieldName, object FieldValue)> GetFields() =>
-            this.Select((x, i) => ($"[{i}]", (object) x));
-
-
-        //--------------------------------------------------
-        /// <inheritdoc />
         public override string ToString() => $"[{string.Join(", ", this.Select(x => x.ToString()))}]";
 
 
@@ -266,6 +260,15 @@ namespace FunSharp.Common
         /// </summary>
         [NotNull] public readonly List<T> Tail;
 
+
+        //--------------------------------------------------
+        /// <inheritdoc />
+        protected override IEnumerable<(string FieldName, object FieldValue)> GetFields()
+        {
+            yield return (nameof(Head), this.Head);
+            yield return (nameof(Tail), this.Tail);
+        }
+
     }
 
 
@@ -282,6 +285,14 @@ namespace FunSharp.Common
         /// <inheritdoc />
         public ListEmpty() : base(nameof(List.Empty))
         {
+        }
+
+
+        //--------------------------------------------------
+        /// <inheritdoc />
+        protected override IEnumerable<(string FieldName, object FieldValue)> GetFields()
+        {
+            yield break;
         }
 
     }
