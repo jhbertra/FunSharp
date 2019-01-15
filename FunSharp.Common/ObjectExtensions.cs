@@ -101,6 +101,20 @@ namespace FunSharp.Common
             return Option.Some(instance);
         }
 
+
+        //--------------------------------------------------
+        /// <summary>
+        /// Wrap <paramref name="instance" /> in an
+        /// <see cref="Update{T}"/>.
+        /// </summary>
+        [NotNull, ItemNotNull, Pure]
+        public static Update<T> ToUpdate<T>([NotNull] this T instance)
+        {
+            if (instance == null) throw new ArgumentNullException(nameof(instance));
+
+            return Update.Set(instance);
+        }
+
     }
 
 }
