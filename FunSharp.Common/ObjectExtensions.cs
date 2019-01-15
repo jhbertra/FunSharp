@@ -50,7 +50,7 @@ namespace FunSharp.Common
         [NotNull, Pure]
         public static Either<TLeft, TRight> ToEitherLeft<TLeft, TRight>(
             [NotNull] this TLeft instance,
-            TypeHint<TRight> tRightHint)
+            TypeHint<TRight> tRightHint = default)
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
 
@@ -66,7 +66,7 @@ namespace FunSharp.Common
         [NotNull, Pure]
         public static Either<TLeft, TRight> ToEitherRight<TLeft, TRight>(
             [NotNull] this TRight instance,
-            TypeHint<TLeft> tLeftHint)
+            TypeHint<TLeft> tLeftHint = default)
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
 

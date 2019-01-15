@@ -145,7 +145,7 @@ namespace FunSharp.Common
         [NotNull]
         public static Func<Option<T>, Option<TCast>> OfType<T, TCast>() where TCast : T
         {
-            return x => x.OfType<T, TCast>(default);
+            return x => x.OfType<T, TCast>();
         }
 
     }

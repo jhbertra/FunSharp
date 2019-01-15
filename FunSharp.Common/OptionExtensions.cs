@@ -140,11 +140,49 @@ namespace FunSharp.Common
         [NotNull]
         public static Option<TCast> OfType<T, TCast>(
             [NotNull] this Option<T> option,
-            TypeHint<TCast> tHint) where TCast : T
+            TypeHint<TCast> tHint = default) where TCast : T
         {
             if (option is null) throw new ArgumentNullException(nameof(option));
 
             return option.Bind(x => x is TCast result ? result.ToOption() : Option<TCast>.None);
+        }
+
+
+        //--------------------------------------------------
+        /// <summary>
+        /// Converts <paramref name="option" /> to an
+        /// <see cref="Either{TLeft,TRight}"/>, wrapping
+        /// either the wrapped value or <paramref name="rightValue" />.
+        /// </summary>
+        public static Either<TLeft, TRight> ToEitherLeft<TLeft, TRight>(
+            [NotNull] this Option<TLeft> option,
+            [NotNull] TRight rightValue)
+        {
+            if (option is null) throw new ArgumentNullException(nameof(option));
+            if (rightValue == null) throw new ArgumentNullException(nameof(rightValue));
+
+            return option.Match(
+                Either<TLeft, TRight>.Left,
+                () => Either.Right<TLeft, TRight>(rightValue));
+        }
+
+
+        //--------------------------------------------------
+        /// <summary>
+        /// Converts <paramref name="option" /> to an
+        /// <see cref="Either{TLeft,TRight}"/>, wrapping
+        /// either the wrapped value or <paramref name="leftValue" />.
+        /// </summary>
+        public static Either<TLeft, TRight> ToEitherRight<TLeft, TRight>(
+            [NotNull] this Option<TRight> option,
+            [NotNull] TLeft leftValue)
+        {
+            if (option is null) throw new ArgumentNullException(nameof(option));
+            if (leftValue == null) throw new ArgumentNullException(nameof(leftValue));
+
+            return option.Match(
+                Either<TLeft, TRight>.Right,
+                () => Either.Left<TLeft, TRight>(leftValue));
         }
 
     }
