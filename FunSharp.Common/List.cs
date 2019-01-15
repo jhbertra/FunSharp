@@ -11,13 +11,20 @@ namespace FunSharp.Common
     //* Module
     //**************************************************
 
+    //--------------------------------------------------
+    /// <inheritdoc cref="List{T}"/>
     [PublicAPI]
     public static class List
     {
 
+        //--------------------------------------------------
+        /// <inheritdoc cref="List{T}.Cons"/>
         [NotNull]
         public static List<T> Cons<T>([NotNull] T value, List<T> tail) => List<T>.Cons(value, tail);
 
+
+        //--------------------------------------------------
+        /// <inheritdoc cref="List{T}.Empty"/>
         [NotNull]
         public static List<T> Empty<T>() => List<T>.Empty;
 
@@ -28,6 +35,10 @@ namespace FunSharp.Common
     //* Types
     //**************************************************
 
+    //--------------------------------------------------
+    /// <summary>
+    /// An immutable, singly-linked-list.
+    /// </summary>
     [PublicAPI]
     public abstract class List<T> :
         StructuralEquality<List<T>>,
@@ -41,12 +52,23 @@ namespace FunSharp.Common
         //* Constructors
         //**************************************************
 
+        //--------------------------------------------------
+        /// <summary>
+        /// Create a new list with a head and a tail.
+        /// </summary>
         [NotNull]
         public static List<T> Cons([NotNull] T value, List<T> tail) => new ListCons<T>(value, tail);
 
+
+        //--------------------------------------------------
+        /// <summary>
+        /// Create a new list with no elements.
+        /// </summary>
         [NotNull]
         public static List<T> Empty => new ListEmpty<T>();
 
+
+        //--------------------------------------------------
         protected List([NotNull] string tag)
         {
             if (string.IsNullOrWhiteSpace(tag))
@@ -60,8 +82,13 @@ namespace FunSharp.Common
         //* Properties
         //**************************************************
 
+        //--------------------------------------------------
+        /// <inheritdoc />
         public bool IsEmpty => this is ListEmpty<T>;
 
+
+        //--------------------------------------------------
+        /// <inheritdoc />
         public string Tag { get; }
 
 
@@ -69,6 +96,8 @@ namespace FunSharp.Common
         //* Methods
         //**************************************************
 
+        //--------------------------------------------------
+        /// <inheritdoc />
         public List<T> Append(List<T> t)
         {
             var stack = new Stack<T>();
@@ -85,6 +114,8 @@ namespace FunSharp.Common
             return t;
         }
 
+        //--------------------------------------------------
+        /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
             var list = this;
@@ -95,11 +126,20 @@ namespace FunSharp.Common
             }
         }
 
+
+        //--------------------------------------------------
+        /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
+
+        //--------------------------------------------------
+        /// <inheritdoc />
         protected override IEnumerable<(string FieldName, object FieldValue)> GetFields() =>
             this.Select((x, i) => ($"[{i}]", (object) x));
 
+
+        //--------------------------------------------------
+        /// <inheritdoc />
         public override string ToString() => $"[{string.Join(", ", this.Select(x => x.ToString()))}]";
 
 
@@ -112,11 +152,19 @@ namespace FunSharp.Common
     }
 
 
+    //--------------------------------------------------
+    /// <inheritdoc />
+    /// <remarks>
+    /// This type expresses a list that is constructed from
+    /// a head and a tail.
+    /// </remarks>
     [PublicAPI]
     public sealed class ListCons<T> : List<T>
     {
 
-        public ListCons([NotNull] T head, [NotNull] List<T> tail) : base("Cons")
+        //--------------------------------------------------
+        /// <inheritdoc />
+        public ListCons([NotNull] T head, [NotNull] List<T> tail) : base(nameof(List.Cons))
         {
             if (head == null) throw new ArgumentNullException(nameof(head));
 
@@ -124,17 +172,35 @@ namespace FunSharp.Common
             this.Tail = tail ?? throw new ArgumentNullException(nameof(tail));
         }
 
+
+        //--------------------------------------------------
+        /// <summary>
+        /// The head element of the list.
+        /// </summary>
         [NotNull] public readonly T Head;
+
+
+        //--------------------------------------------------
+        /// <summary>
+        /// The tail element of the list.
+        /// </summary>
         [NotNull] public readonly List<T> Tail;
 
     }
 
 
+    //--------------------------------------------------
+    /// <inheritdoc />
+    /// <remarks>
+    /// This type expresses a list that is empty.
+    /// </remarks>
     [PublicAPI]
     public sealed class ListEmpty<T> : List<T>
     {
 
-        public ListEmpty() : base("Empty")
+        //--------------------------------------------------
+        /// <inheritdoc />
+        public ListEmpty() : base(nameof(List.Empty))
         {
         }
 

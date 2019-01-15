@@ -9,26 +9,33 @@ namespace FunSharp.Common
     //* Module
     //**************************************************
 
+    //--------------------------------------------------
+    /// <inheritdoc cref="Either{TLeft,TRight}"/>
     [PublicAPI]
     public static class Either
     {
 
-        public static Either<TLeft, TRight> Left<TLeft, TRight>([NotNull] TLeft value, Type<TRight> tRight)
+        //--------------------------------------------------
+        /// <inheritdoc cref="Either{TLeft,TRight}.Left"/>
+        [NotNull]
+        public static Either<TLeft, TRight> Left<TLeft, TRight>([NotNull] TLeft value, TypeHint<TRight> tRightHint)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            if (tRight is null) throw new ArgumentNullException(nameof(tRight));
 
             return Either<TLeft, TRight>.Left(value);
         }
 
-        public static Either<TLeft, TRight> Right<TLeft, TRight>([NotNull] TRight value, Type<TLeft> tLeft)
+
+        //--------------------------------------------------
+        /// <inheritdoc cref="Either{TLeft,TRight}.Right"/>
+        [NotNull]
+        public static Either<TLeft, TRight> Right<TLeft, TRight>([NotNull] TRight value, TypeHint<TLeft> tLeftHint)
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
-            if (tLeft is null) throw new ArgumentNullException(nameof(tLeft));
 
             return Either<TLeft, TRight>.Right(value);
         }
-        
+
     }
 
 
@@ -36,6 +43,12 @@ namespace FunSharp.Common
     //* Types
     //**************************************************
 
+    //--------------------------------------------------
+    /// <summary>
+    /// Encodes a choice between two alternatives.
+    /// </summary>
+    /// <typeparam name="TLeft">The type of the first alternative</typeparam>
+    /// <typeparam name="TRight">The type of the second alternative</typeparam>
     [PublicAPI]
     public abstract class Either<TLeft, TRight> : StructuralEquality<Either<TLeft, TRight>>, IUnionType
     {
@@ -44,12 +57,27 @@ namespace FunSharp.Common
         //* Constructors
         //**************************************************
 
+        //--------------------------------------------------
+        /// <summary>
+        /// Create a new <see cref="Either{TLeft,TRight}"/>
+        /// resolved as the left choice.
+        /// </summary>
+        /// <param name="value">Resolved value of the choice.</param>
         [NotNull]
         public static Either<TLeft, TRight> Left([NotNull] TLeft value) => new EitherLeft<TLeft, TRight>(value);
 
+
+        //--------------------------------------------------
+        /// <summary>
+        /// Create a new <see cref="Either{TLeft,TRight}"/>
+        /// resolved as the right choice.
+        /// </summary>
+        /// <param name="value">Resolved value of the choice.</param>
         [NotNull]
         public static Either<TLeft, TRight> Right([NotNull] TRight value) => new EitherRight<TLeft, TRight>(value);
 
+
+        //--------------------------------------------------
         protected Either([NotNull] string tag)
         {
             if (string.IsNullOrWhiteSpace(tag))
@@ -63,28 +91,58 @@ namespace FunSharp.Common
         //* Properties
         //**************************************************
 
+        //--------------------------------------------------
+        /// <summary>
+        /// <code>true</code> if the encoded choice is the
+        /// left alternative.
+        /// </summary>
         public bool IsLeft => this is EitherLeft<TLeft, TRight>;
 
-        public bool IsRight => this is EitherLeft<TLeft, TRight>;
 
+        //--------------------------------------------------
+        /// <summary>
+        /// <code>true</code> if the encoded choice is the
+        /// right alternative.
+        /// </summary>
+        public bool IsRight => this is EitherRight<TLeft, TRight>;
+
+
+        //--------------------------------------------------
+        /// <inheritdoc />
         public string Tag { get; }
 
     }
 
 
+    //--------------------------------------------------
+    /// <inheritdoc />
+    /// <remarks>
+    /// This case class expresses that the left alternative
+    /// was chosen.
+    /// </remarks>
     [PublicAPI]
     public sealed class EitherLeft<TLeft, TRight> : Either<TLeft, TRight>
     {
 
-        public EitherLeft([NotNull] TLeft value) : base("Left")
+        //--------------------------------------------------
+        /// <inheritdoc />
+        public EitherLeft([NotNull] TLeft value) : base(nameof(Either.Left))
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
 
             this.Value = value;
         }
 
+
+        //--------------------------------------------------
+        /// <summary>
+        /// The value of the choice.
+        /// </summary>
         [NotNull] public readonly TLeft Value;
 
+
+        //--------------------------------------------------
+        /// <inheritdoc />
         protected override IEnumerable<(string FieldName, object FieldValue)> GetFields()
         {
             yield return (nameof(this.Value), Value);
@@ -93,19 +151,35 @@ namespace FunSharp.Common
     }
 
 
+    //--------------------------------------------------
+    /// <inheritdoc />
+    /// <remarks>
+    /// This case class expresses that the right alternative
+    /// was chosen.
+    /// </remarks>
     [PublicAPI]
     public sealed class EitherRight<TLeft, TRight> : Either<TLeft, TRight>
     {
 
-        public EitherRight([NotNull] TRight value) : base("Right")
+        //--------------------------------------------------
+        /// <inheritdoc />
+        public EitherRight([NotNull] TRight value) : base(nameof(Either.Right))
         {
             if (value == null) throw new ArgumentNullException(nameof(value));
 
             this.Value = value;
         }
 
+
+        //--------------------------------------------------
+        /// <summary>
+        /// The value of the choice.
+        /// </summary>
         [NotNull] public readonly TRight Value;
 
+
+        //--------------------------------------------------
+        /// <inheritdoc />
         protected override IEnumerable<(string FieldName, object FieldValue)> GetFields()
         {
             yield return (nameof(this.Value), Value);

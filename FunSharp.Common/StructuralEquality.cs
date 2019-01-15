@@ -2,13 +2,26 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace FunSharp.Common
 {
 
+    //--------------------------------------------------
+    /// <summary>
+    /// Base class for immutable objects whose equality
+    /// is defined by the structure of their data.
+    /// </summary>
+    [PublicAPI]
     public abstract class StructuralEquality<T> : IEquatable<StructuralEquality<T>>
     {
 
+        //**************************************************
+        //* Methods
+        //**************************************************
+
+        //--------------------------------------------------
+        /// <inheritdoc />
         public bool Equals(StructuralEquality<T> other)
         {
             if (other is null)
@@ -31,12 +44,12 @@ namespace FunSharp.Common
                     {
                         var fieldValue1 = hasNext1 ? enumerator1.Current.FieldValue : null;
                         var fieldValue2 = hasNext2 ? enumerator2.Current.FieldValue : null;
-    
+
                         if (!object.Equals(fieldValue1, fieldValue2))
                         {
                             return false;
                         }
-                        
+
                         hasNext1 = enumerator1.MoveNext();
                         hasNext2 = enumerator2.MoveNext();
                     }
@@ -46,6 +59,9 @@ namespace FunSharp.Common
             }
         }
 
+
+        //--------------------------------------------------
+        /// <inheritdoc />
         public override bool Equals(object obj)
         {
             if (object.ReferenceEquals(this, obj))
@@ -62,6 +78,9 @@ namespace FunSharp.Common
             }
         }
 
+
+        //--------------------------------------------------
+        /// <inheritdoc />
         public override int GetHashCode()
         {
             return this
@@ -77,16 +96,9 @@ namespace FunSharp.Common
                     (state, x) => (state * 257 ^ x.GetHashCode()));
         }
 
-        public static bool operator ==(StructuralEquality<T> left, StructuralEquality<T> right)
-        {
-            return object.Equals(left, right);
-        }
 
-        public static bool operator !=(StructuralEquality<T> left, StructuralEquality<T> right)
-        {
-            return !object.Equals(left, right);
-        }
-
+        //--------------------------------------------------
+        /// <inheritdoc />
         public override string ToString()
         {
             switch (this)
@@ -105,7 +117,28 @@ namespace FunSharp.Common
             }
         }
 
+
+        //--------------------------------------------------
+        /// <summary>
+        /// Enumerates the names and values of the data fields in
+        /// this structure, for equality evaluation and display.
+        /// </summary>
         protected abstract IEnumerable<(string FieldName, object FieldValue)> GetFields();
+
+
+        //**************************************************
+        //* Operators
+        //**************************************************
+
+        public static bool operator ==(StructuralEquality<T> left, StructuralEquality<T> right)
+        {
+            return object.Equals(left, right);
+        }
+
+        public static bool operator !=(StructuralEquality<T> left, StructuralEquality<T> right)
+        {
+            return !object.Equals(left, right);
+        }
 
     }
 

@@ -4,10 +4,19 @@ using JetBrains.Annotations;
 namespace FunSharp.Common
 {
 
+    //--------------------------------------------------
+    /// <summary>
+    /// Extensions for <see cref="Option{T}"/> instances.
+    /// </summary>
     [PublicAPI]
     public static partial class OptionExtensions
     {
 
+        //--------------------------------------------------
+        /// <summary>
+        /// If <paramref name="option" /> has a value, use
+        /// it to compute another <see cref="Option{T}"/>.
+        /// </summary>
         [NotNull]
         public static Option<TResult> Bind<T, TResult>(
             [NotNull] this Option<T> option,
@@ -25,6 +34,11 @@ namespace FunSharp.Common
         }
 
 
+        //--------------------------------------------------
+        /// <summary>
+        /// If <paramref name="option" /> has a value, use
+        /// it, or else use <paramref name="defaultValue" />.
+        /// </summary>
         [NotNull]
         public static T DefaultWith<T>(
             [NotNull] this Option<T> option,
@@ -42,6 +56,12 @@ namespace FunSharp.Common
         }
 
 
+        //--------------------------------------------------
+        /// <summary>
+        /// Produce an <see cref="Option{T}"/> with the value
+        /// in <paramref name="option" />, only if it passes
+        /// <paramref name="predicate" />.
+        /// </summary>
         [NotNull]
         public static Option<T> Filter<T>(
             [NotNull] this Option<T> option,
@@ -64,6 +84,11 @@ namespace FunSharp.Common
         }
 
 
+        //--------------------------------------------------
+        /// <summary>
+        /// Transform the value contained in
+        /// <paramref name="option" />.
+        /// </summary>
         [NotNull]
         public static Option<TResult> Map<T, TResult>(
             [NotNull] this Option<T> option,
@@ -81,6 +106,12 @@ namespace FunSharp.Common
         }
 
 
+        //--------------------------------------------------
+        /// <summary>
+        /// If <paramref name="option" /> has a value, run
+        /// <paramref name="valueSelector" />, or else run
+        /// <paramref name="noValueSelector" />.
+        /// </summary>
         [NotNull]
         public static TResult Match<T, TResult>(
             [NotNull] this Option<T> option,
@@ -100,13 +131,18 @@ namespace FunSharp.Common
         }
 
 
+        //--------------------------------------------------
+        /// <summary>
+        /// Return a new <see cref="Option{TCast}"/> if the
+        /// value in <paramref name="option" /> is an instance
+        /// of <typeparamref name="TCast"/>. 
+        /// </summary>
         [NotNull]
         public static Option<TCast> OfType<T, TCast>(
             [NotNull] this Option<T> option,
-            [NotNull] Type<TCast> type) where TCast : T
+            TypeHint<TCast> tHint) where TCast : T
         {
             if (option is null) throw new ArgumentNullException(nameof(option));
-            if (type is null) throw new ArgumentNullException(nameof(type));
 
             return option.Bind(x => x is TCast result ? result.ToOption() : Option<TCast>.None);
         }

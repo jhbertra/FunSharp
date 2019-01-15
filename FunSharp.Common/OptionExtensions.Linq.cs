@@ -7,6 +7,8 @@ namespace FunSharp.Common
     public static partial class OptionExtensions
     {
 
+        //--------------------------------------------------
+        /// <inheritdoc cref="Map{T,TResult}"/>
         [NotNull]
         public static Option<T2> Select<T1, T2>(
             [NotNull] this Option<T1> option,
@@ -19,6 +21,8 @@ namespace FunSharp.Common
         }
 
 
+        //--------------------------------------------------
+        /// <inheritdoc cref="Bind{T,TResult}"/>
         [NotNull]
         public static Option<T2> SelectMany<T1, T2>(
             [NotNull] this Option<T1> option,
@@ -31,6 +35,8 @@ namespace FunSharp.Common
         }
 
 
+        //--------------------------------------------------
+        /// <inheritdoc cref="Bind{T,TResult}"/>
         [NotNull]
         public static Option<T2> SelectMany<T1, TIntermediate, T2>(
             [NotNull] this Option<T1> option,
@@ -45,6 +51,8 @@ namespace FunSharp.Common
         }
 
 
+        //--------------------------------------------------
+        /// <inheritdoc cref="Filter{T}"/>
         [NotNull]
         public static Option<T> Where<T>(
             [NotNull] this Option<T> option,

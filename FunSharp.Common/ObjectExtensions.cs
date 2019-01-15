@@ -5,20 +5,34 @@ using JetBrains.Annotations;
 namespace FunSharp.Common
 {
 
+    //--------------------------------------------------
+    /// <summary>
+    /// Extensions for <see cref="object"/> instances
+    /// (including generics).
+    /// </summary>
     [PublicAPI]
     public static class ObjectExtensions
     {
 
+        //--------------------------------------------------
+        /// <summary>
+        /// Call <see cref="f"/> with <paramref name="t1" />.
+        /// </summary>
         [NotNull]
         public static T2 Pipe<T1, T2>([NotNull] this T1 t1, [NotNull] Func<T1, T2> f)
         {
             if (t1 == null) throw new ArgumentNullException(nameof(t1));
-            if (f is null) { throw new ArgumentNullException(nameof(f)); }
+            if (f is null) throw new ArgumentNullException(nameof(f));
 
             return f(t1);
         }
 
 
+        //--------------------------------------------------
+        /// <summary>
+        /// Wrap <paramref name="instance" /> in an
+        /// <see cref="IEnumerable{T}"/>.
+        /// </summary>
         [NotNull, ItemNotNull, Pure]
         public static IEnumerable<T> ToEnumerable<T>([NotNull] this T instance)
         {
@@ -28,30 +42,43 @@ namespace FunSharp.Common
         }
 
 
+        //--------------------------------------------------
+        /// <summary>
+        /// Wrap <paramref name="instance" /> in an
+        /// <see cref="Either{TLeft,TRight}"/>.
+        /// </summary>
         [NotNull, Pure]
         public static Either<TLeft, TRight> ToEitherLeft<TLeft, TRight>(
             [NotNull] this TLeft instance,
-            [NotNull] Type<TRight> tRight)
+            TypeHint<TRight> tRightHint)
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
-            if (tRight is null) { throw new ArgumentNullException(nameof(tRight)); }
 
             return Either<TLeft, TRight>.Left(instance);
         }
 
 
+        //--------------------------------------------------
+        /// <summary>
+        /// Wrap <paramref name="instance" /> in an
+        /// <see cref="Either{TLeft,TRight}"/>.
+        /// </summary>
         [NotNull, Pure]
         public static Either<TLeft, TRight> ToEitherRight<TLeft, TRight>(
             [NotNull] this TRight instance,
-            [NotNull] Type<TLeft> tLeft)
+            TypeHint<TLeft> tLeftHint)
         {
             if (instance == null) throw new ArgumentNullException(nameof(instance));
-            if (tLeft is null) { throw new ArgumentNullException(nameof(tLeft)); }
 
             return Either<TLeft, TRight>.Right(instance);
         }
 
 
+        //--------------------------------------------------
+        /// <summary>
+        /// Wrap <paramref name="instance" /> in a
+        /// <see cref="List{T}"/>.
+        /// </summary>
         [NotNull, ItemNotNull, Pure]
         public static List<T> ToList<T>([NotNull] this T instance)
         {
@@ -61,6 +88,11 @@ namespace FunSharp.Common
         }
 
 
+        //--------------------------------------------------
+        /// <summary>
+        /// Wrap <paramref name="instance" /> in an
+        /// <see cref="Option{T}"/>.
+        /// </summary>
         [NotNull, ItemNotNull, Pure]
         public static Option<T> ToOption<T>([NotNull] this T instance)
         {
