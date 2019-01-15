@@ -15,6 +15,33 @@ namespace FunSharp.Common
 
         //--------------------------------------------------
         /// <summary>
+        /// Transform the right value contained in
+        /// <paramref name="either" />.
+        /// </summary>
+        [NotNull]
+        public static Either<TLeft2, TRight2> BiMap<TLeft1, TLeft2, TRight1, TRight2>(
+            [NotNull] this Either<TLeft1, TRight1> either,
+            [NotNull] Func<TLeft1, TLeft2> leftSelector,
+            [NotNull] Func<TRight1, TRight2> rightSelector)
+        {
+            if (either is null) throw new ArgumentNullException(nameof(either));
+            if (leftSelector is null) throw new ArgumentNullException(nameof(leftSelector));
+            if (rightSelector is null) throw new ArgumentNullException(nameof(rightSelector));
+
+            switch (either)
+            {
+                case EitherLeft<TLeft1, TRight1> left:
+                    return Either.Left(leftSelector(left.Value), new TypeHint<TRight2>());
+                case EitherRight<TLeft1, TRight1> right:
+                    return Either.Right(rightSelector(right.Value), new TypeHint<TLeft2>());
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(either));
+            }
+        }
+
+
+        //--------------------------------------------------
+        /// <summary>
         /// If <paramref name="either" /> is left, use
         /// it to compute another <see cref="Either{TLeft,TRight}"/>.
         /// </summary>
@@ -162,33 +189,6 @@ namespace FunSharp.Common
                     return Either.Left(left.Value, new TypeHint<TRight2>());
                 case EitherRight<TLeft, TRight1> right:
                     return Either.Right(valueSelector(right.Value), new TypeHint<TLeft>());
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(either));
-            }
-        }
-
-
-        //--------------------------------------------------
-        /// <summary>
-        /// Transform the right value contained in
-        /// <paramref name="either" />.
-        /// </summary>
-        [NotNull]
-        public static Either<TLeft2, TRight2> BiMap<TLeft1, TLeft2, TRight1, TRight2>(
-            [NotNull] this Either<TLeft1, TRight1> either,
-            [NotNull] Func<TLeft1, TLeft2> leftSelector,
-            [NotNull] Func<TRight1, TRight2> rightSelector)
-        {
-            if (either is null) throw new ArgumentNullException(nameof(either));
-            if (leftSelector is null) throw new ArgumentNullException(nameof(leftSelector));
-            if (rightSelector is null) throw new ArgumentNullException(nameof(rightSelector));
-
-            switch (either)
-            {
-                case EitherLeft<TLeft1, TRight1> left:
-                    return Either.Left(leftSelector(left.Value), new TypeHint<TRight2>());
-                case EitherRight<TLeft1, TRight1> right:
-                    return Either.Right(rightSelector(right.Value), new TypeHint<TLeft2>());
                 default:
                     throw new ArgumentOutOfRangeException(nameof(either));
             }
