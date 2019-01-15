@@ -1,10 +1,15 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 
 namespace FunSharp.Common
 {
+
+    //**************************************************
+    //* Module
+    //**************************************************
 
     [PublicAPI]
     public static class Option
@@ -23,18 +28,88 @@ namespace FunSharp.Common
 
         public static Option<Unit> Guard(bool condition) => condition ? Option.Some<Unit>(default) : Option<Unit>.None;
 
+
+        [NotNull]
+        public static Func<Option<T>, Option<TResult>> Bind<T, TResult>(
+            [NotNull] Func<T, Option<TResult>> getNextOption)
+        {
+            if (getNextOption is null) throw new ArgumentNullException(nameof(getNextOption));
+
+            return x => x.Bind(getNextOption);
+        }
+
+
+        [NotNull]
+        public static Func<Option<T>, T> DefaultWith<T>(
+            [NotNull] T defaultValue)
+        {
+            if (defaultValue == null) throw new ArgumentNullException(nameof(defaultValue));
+
+            return x => x.DefaultWith(defaultValue);
+        }
+
+
+        [NotNull]
+        public static Func<Option<T>, Option<T>> Filter<T>(
+            [NotNull] Func<T, bool> predicate)
+        {
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+
+            return x => x.Filter(predicate);
+        }
+
+
+        [NotNull]
+        public static Func<Option<T>, Option<TResult>> Map<T, TResult>(
+            [NotNull] Func<T, TResult> valueSelector)
+        {
+            if (valueSelector is null) throw new ArgumentNullException(nameof(valueSelector));
+
+            return x => x.Map(valueSelector);
+        }
+
+
+        [NotNull]
+        public static Func<Option<T>, TResult> Match<T, TResult>(
+            [NotNull] Func<T, TResult> valueSelector,
+            [NotNull] Func<TResult> noValueSelector)
+        {
+            if (valueSelector is null) throw new ArgumentNullException(nameof(valueSelector));
+            if (noValueSelector is null) throw new ArgumentNullException(nameof(noValueSelector));
+
+            return x => x.Match(valueSelector, noValueSelector);
+        }
+
+
+        [NotNull]
+        public static Func<Option<T>, Option<TCast>> OfType<T, TCast>(
+            [NotNull] Type<TCast> type) where TCast : T
+        {
+            if (type is null) throw new ArgumentNullException(nameof(type));
+
+            return x => x.OfType(type);
+        }
+
     }
 
 
+    //**************************************************
+    //* Types
+    //**************************************************
+
     [PublicAPI]
-    public abstract class Option<T> : StructuralEquality<Option<T>>, IUnionType
+    public abstract class Option<T> : StructuralEquality<Option<T>>, IUnionType, IEnumerable<T>, IEmpty
     {
 
-        [NotNull]
-        public static Option<T> Some([NotNull] T value) => new SomeOption<T>(value);
+        //**************************************************
+        //* Constructors
+        //**************************************************
 
         [NotNull]
-        public static Option<T> None => new NoneOption<T>();
+        public static Option<T> Some([NotNull] T value) => new OptionSome<T>(value);
+
+        [NotNull]
+        public static Option<T> None => new OptionNone<T>();
 
         protected Option([NotNull] string tag)
         {
@@ -44,9 +119,37 @@ namespace FunSharp.Common
             this.Tag = tag;
         }
 
-        public bool IsEmpty => this is NoneOption<T>;
+        
+        //**************************************************
+        //* Properties
+        //**************************************************
+
+        public bool IsEmpty => this is OptionNone<T>;
 
         public string Tag { get; }
+
+        
+        //**************************************************
+        //* Methods
+        //**************************************************
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            if (this is OptionSome<T> some)
+            {
+                yield return some.Value;
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        
+        //**************************************************
+        //* Operators
+        //**************************************************
 
         public static Option<T> operator |(Option<T> a, Option<T> b) => a.IsEmpty ? b.IsEmpty ? None : b : a;
 
@@ -54,20 +157,16 @@ namespace FunSharp.Common
 
         public static bool operator false(Option<T> a) => a.IsEmpty;
 
-
     }
 
 
     [PublicAPI]
-    public sealed class SomeOption<T> : Option<T>
+    public sealed class OptionSome<T> : Option<T>
     {
 
-        public SomeOption([NotNull] T value) : base("Some")
+        public OptionSome([NotNull] T value) : base("Some")
         {
-            if (value == null)
-            {
-                throw new ArgumentNullException(nameof(value));
-            }
+            if (value == null) throw new ArgumentNullException(nameof(value));
 
             this.Value = value;
         }
@@ -83,10 +182,10 @@ namespace FunSharp.Common
 
 
     [PublicAPI]
-    public sealed class NoneOption<T> : Option<T>
+    public sealed class OptionNone<T> : Option<T>
     {
 
-        public NoneOption() : base("None")
+        public OptionNone() : base("None")
         {
         }
 
