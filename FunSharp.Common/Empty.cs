@@ -1,3 +1,5 @@
+using JetBrains.Annotations;
+
 namespace FunSharp.Common
 {
 
@@ -6,6 +8,7 @@ namespace FunSharp.Common
     /// Interface for a type that has a defined empty
     /// value.
     /// </summary>
+    [PublicAPI]
     public interface IEmpty
     {
 

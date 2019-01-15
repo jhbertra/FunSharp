@@ -28,6 +28,86 @@ namespace FunSharp.Common
         [NotNull]
         public static List<T> Empty<T>() => List<T>.Empty;
 
+        
+        //--------------------------------------------------
+        /// <inheritdoc cref="ListExtensions.Bind{T,TResult}"/>
+        /// <remarks>
+        /// This is a curried version of the extension method
+        /// of the same name.
+        /// </remarks>
+        [NotNull]
+        public static Func<List<T>, List<TResult>> Bind<T, TResult>(
+            [NotNull] Func<T, List<TResult>> getSubList)
+        {
+            if (getSubList is null) throw new ArgumentNullException(nameof(getSubList));
+
+            return x => x.Bind(getSubList);
+        }
+
+
+        //--------------------------------------------------
+        /// <inheritdoc cref="ListExtensions.Filter{T}"/>
+        /// <remarks>
+        /// This is a curried version of the extension method
+        /// of the same name.
+        /// </remarks>
+        [NotNull]
+        public static Func<List<T>, List<T>> Filter<T>(
+            [NotNull] Func<T, bool> predicate)
+        {
+            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
+
+            return x => x.Filter(predicate);
+        }
+
+
+        //--------------------------------------------------
+        /// <inheritdoc cref="ListExtensions.Map{T,TResult}"/>
+        /// <remarks>
+        /// This is a curried version of the extension method
+        /// of the same name.
+        /// </remarks>
+        [NotNull]
+        public static Func<List<T>, List<TResult>> Map<T, TResult>(
+            [NotNull] Func<T, TResult> valueSelector)
+        {
+            if (valueSelector is null) throw new ArgumentNullException(nameof(valueSelector));
+
+            return x => x.Map(valueSelector);
+        }
+
+
+        //--------------------------------------------------
+        /// <inheritdoc cref="ListExtensions.Match{T,TResult}"/>
+        /// <remarks>
+        /// This is a curried version of the extension method
+        /// of the same name.
+        /// </remarks>
+        [NotNull]
+        public static Func<List<T>, TResult> Match<T, TResult>(
+            [NotNull] Func<T, List<T>, TResult> consSelector,
+            [NotNull] Func<TResult> emptySelector)
+        {
+            if (consSelector is null) throw new ArgumentNullException(nameof(consSelector));
+            if (emptySelector is null) throw new ArgumentNullException(nameof(emptySelector));
+
+            return x => x.Match(consSelector, emptySelector);
+        }
+
+
+        //--------------------------------------------------
+        /// <param name="typeHint"></param>
+        /// <inheritdoc cref="ListExtensions.OfType{T,TCast}"/>
+        /// <remarks>
+        /// This is a curried version of the extension method
+        /// of the same name.
+        /// </remarks>
+        [NotNull]
+        public static Func<List<T>, List<TCast>> OfType<T, TCast>(TypeHint<TCast> typeHint = default) where TCast : T
+        {
+            return x => x.OfType(typeHint);
+        }
+
     }
 
 

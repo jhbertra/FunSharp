@@ -137,15 +137,16 @@ namespace FunSharp.Common
 
 
         //--------------------------------------------------
+        /// <param name="typeHint"></param>
         /// <inheritdoc cref="OptionExtensions.OfType{T,TCast}"/>
         /// <remarks>
         /// This is a curried version of the extension method
         /// of the same name.
         /// </remarks>
         [NotNull]
-        public static Func<Option<T>, Option<TCast>> OfType<T, TCast>() where TCast : T
+        public static Func<Option<T>, Option<TCast>> OfType<T, TCast>(TypeHint<TCast> typeHint = default) where TCast : T
         {
-            return x => x.OfType<T, TCast>();
+            return x => x.OfType(typeHint);
         }
 
     }
