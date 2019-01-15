@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using JetBrains.Annotations;
 
 namespace FunSharp.Common
@@ -39,8 +38,6 @@ namespace FunSharp.Common
         public static Func<List<T>, List<TResult>> Bind<T, TResult>(
             [NotNull] Func<T, List<TResult>> getSubList)
         {
-            if (getSubList is null) throw new ArgumentNullException(nameof(getSubList));
-
             return x => x.Bind(getSubList);
         }
 
@@ -55,8 +52,6 @@ namespace FunSharp.Common
         public static Func<List<T>, List<T>> Filter<T>(
             [NotNull] Func<T, bool> predicate)
         {
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-
             return x => x.Filter(predicate);
         }
 
@@ -71,8 +66,6 @@ namespace FunSharp.Common
         public static Func<List<T>, List<TResult>> Map<T, TResult>(
             [NotNull] Func<T, TResult> valueSelector)
         {
-            if (valueSelector is null) throw new ArgumentNullException(nameof(valueSelector));
-
             return x => x.Map(valueSelector);
         }
 
@@ -88,9 +81,6 @@ namespace FunSharp.Common
             [NotNull] Func<T, List<T>, TResult> consSelector,
             [NotNull] Func<TResult> emptySelector)
         {
-            if (consSelector is null) throw new ArgumentNullException(nameof(consSelector));
-            if (emptySelector is null) throw new ArgumentNullException(nameof(emptySelector));
-
             return x => x.Match(consSelector, emptySelector);
         }
 
@@ -151,9 +141,6 @@ namespace FunSharp.Common
         //--------------------------------------------------
         protected List([NotNull] string tag)
         {
-            if (string.IsNullOrWhiteSpace(tag))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(tag));
-
             this.Tag = tag;
         }
 

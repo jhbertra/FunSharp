@@ -45,9 +45,6 @@ namespace FunSharp.Common
         /// <inheritdoc cref="AppendableExtensions.Repeat{T}"/>
         public static Func<T, T> Repeat<T>([NotNull] T empty, int times) where T : IAppendable<T>
         {
-            if (empty == null) throw new ArgumentNullException(nameof(empty));
-            if (times <= 0) throw new ArgumentOutOfRangeException(nameof(times));
-
             return t => t.Repeat(empty, times);
         }
 

@@ -39,8 +39,6 @@ namespace FunSharp.Common
         public static Func<Option<T>, Option<TResult>> Bind<T, TResult>(
             [NotNull] Func<T, Option<TResult>> getNextOption)
         {
-            if (getNextOption is null) throw new ArgumentNullException(nameof(getNextOption));
-
             return x => x.Bind(getNextOption);
         }
 
@@ -67,8 +65,6 @@ namespace FunSharp.Common
         public static Func<Option<T>, T> DefaultWith<T>(
             [NotNull] T defaultValue)
         {
-            if (defaultValue == null) throw new ArgumentNullException(nameof(defaultValue));
-
             return x => x.DefaultWith(defaultValue);
         }
 
@@ -83,8 +79,6 @@ namespace FunSharp.Common
         public static Func<Option<T>, Option<T>> Filter<T>(
             [NotNull] Func<T, bool> predicate)
         {
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-
             return x => x.Filter(predicate);
         }
 
@@ -112,8 +106,6 @@ namespace FunSharp.Common
         public static Func<Option<T>, Option<TResult>> Map<T, TResult>(
             [NotNull] Func<T, TResult> valueSelector)
         {
-            if (valueSelector is null) throw new ArgumentNullException(nameof(valueSelector));
-
             return x => x.Map(valueSelector);
         }
 
@@ -129,9 +121,6 @@ namespace FunSharp.Common
             [NotNull] Func<T, TResult> valueSelector,
             [NotNull] Func<TResult> noValueSelector)
         {
-            if (valueSelector is null) throw new ArgumentNullException(nameof(valueSelector));
-            if (noValueSelector is null) throw new ArgumentNullException(nameof(noValueSelector));
-
             return x => x.Match(valueSelector, noValueSelector);
         }
 
@@ -189,9 +178,6 @@ namespace FunSharp.Common
         //--------------------------------------------------
         protected Option([NotNull] string tag)
         {
-            if (string.IsNullOrWhiteSpace(tag))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(tag));
-
             this.Tag = tag;
         }
 

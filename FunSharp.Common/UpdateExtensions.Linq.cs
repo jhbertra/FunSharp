@@ -14,9 +14,6 @@ namespace FunSharp.Common
             [NotNull] this Update<T1> option,
             [NotNull] Func<T1, T2> valueSelector)
         {
-            if (option is null) throw new ArgumentNullException(nameof(option));
-            if (valueSelector is null) throw new ArgumentNullException(nameof(valueSelector));
-
             return option.Map(valueSelector);
         }
 
@@ -28,9 +25,6 @@ namespace FunSharp.Common
             [NotNull] this Update<T1> option,
             [NotNull] Func<T1, Update<T2>> getNextUpdate)
         {
-            if (option is null) throw new ArgumentNullException(nameof(option));
-            if (getNextUpdate is null) throw new ArgumentNullException(nameof(getNextUpdate));
-
             return option.Bind(getNextUpdate);
         }
 
@@ -43,7 +37,6 @@ namespace FunSharp.Common
             [NotNull] Func<T1, Update<TIntermediate>> getNextUpdate,
             [NotNull] Func<T1, TIntermediate, T2> resultSelector)
         {
-            if (option is null) throw new ArgumentNullException(nameof(option));
             if (getNextUpdate is null) throw new ArgumentNullException(nameof(getNextUpdate));
             if (resultSelector is null) throw new ArgumentNullException(nameof(resultSelector));
 
@@ -58,9 +51,6 @@ namespace FunSharp.Common
             [NotNull] this Update<T> option,
             [NotNull] Func<T, bool> predicate)
         {
-            if (option is null) throw new ArgumentNullException(nameof(option));
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-
             return option.Filter(predicate);
         }
 

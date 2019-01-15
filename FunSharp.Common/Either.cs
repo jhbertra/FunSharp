@@ -22,10 +22,10 @@ namespace FunSharp.Common
         /// of the same name.
         /// </remarks>
         [NotNull]
-        public static Either<TLeft, TRight> Left<TLeft, TRight>([NotNull] TLeft value, TypeHint<TRight> tRightHint = default)
+        public static Either<TLeft, TRight> Left<TLeft, TRight>(
+            [NotNull] TLeft value,
+            TypeHint<TRight> tRightHint = default)
         {
-            if (value == null) throw new ArgumentNullException(nameof(value));
-
             return Either<TLeft, TRight>.Left(value);
         }
 
@@ -37,10 +37,10 @@ namespace FunSharp.Common
         /// of the same name.
         /// </remarks>
         [NotNull]
-        public static Either<TLeft, TRight> Right<TLeft, TRight>([NotNull] TRight value, TypeHint<TLeft> tLeftHint = default)
+        public static Either<TLeft, TRight> Right<TLeft, TRight>(
+            [NotNull] TRight value,
+            TypeHint<TLeft> tLeftHint = default)
         {
-            if (value == null) throw new ArgumentNullException(nameof(value));
-
             return Either<TLeft, TRight>.Right(value);
         }
 
@@ -54,8 +54,6 @@ namespace FunSharp.Common
         public static Func<Either<TLeft1, TRight>, Either<TLeft2, TRight>> BindLeft<TLeft1, TLeft2, TRight>(
             [NotNull] Func<TLeft1, Either<TLeft2, TRight>> makeNextChoice)
         {
-            if (makeNextChoice is null) throw new ArgumentNullException(nameof(makeNextChoice));
-
             return x => x.BindLeft(makeNextChoice);
         }
 
@@ -70,8 +68,6 @@ namespace FunSharp.Common
         public static Func<Either<TLeft, TRight1>, Either<TLeft, TRight2>> BindRight<TLeft, TRight1, TRight2>(
             [NotNull] Func<TRight1, Either<TLeft, TRight2>> makeNextChoice)
         {
-            if (makeNextChoice is null) throw new ArgumentNullException(nameof(makeNextChoice));
-
             return x => x.BindRight(makeNextChoice);
         }
 
@@ -85,8 +81,6 @@ namespace FunSharp.Common
         [NotNull]
         public static Func<Either<TLeft, TRight>, TLeft> DefaultLeftWith<TLeft, TRight>([NotNull] TLeft defaultValue)
         {
-            if (defaultValue == null) throw new ArgumentNullException(nameof(defaultValue));
-
             return x => x.DefaultLeftWith(defaultValue);
         }
 
@@ -100,8 +94,6 @@ namespace FunSharp.Common
         [NotNull]
         public static Func<Either<TLeft, TRight>, TRight> DefaultRightWith<TLeft, TRight>([NotNull] TRight defaultValue)
         {
-            if (defaultValue == null) throw new ArgumentNullException(nameof(defaultValue));
-
             return x => x.DefaultRightWith(defaultValue);
         }
 
@@ -116,8 +108,6 @@ namespace FunSharp.Common
         public static Func<Either<TLeft1, TRight>, Either<TLeft2, TRight>> MapLeft<TLeft1, TLeft2, TRight>(
             [NotNull] Func<TLeft1, TLeft2> valueSelector)
         {
-            if (valueSelector is null) throw new ArgumentNullException(nameof(valueSelector));
-
             return x => x.MapLeft(valueSelector);
         }
 
@@ -132,8 +122,6 @@ namespace FunSharp.Common
         public static Func<Either<TLeft, TRight1>, Either<TLeft, TRight2>> MapRight<TLeft, TRight1, TRight2>(
             [NotNull] Func<TRight1, TRight2> valueSelector)
         {
-            if (valueSelector is null) throw new ArgumentNullException(nameof(valueSelector));
-
             return x => x.MapRight(valueSelector);
         }
 
@@ -149,9 +137,6 @@ namespace FunSharp.Common
             [NotNull] Func<TLeft1, TLeft2> leftSelector,
             [NotNull] Func<TRight1, TRight2> rightSelector)
         {
-            if (leftSelector is null) throw new ArgumentNullException(nameof(leftSelector));
-            if (rightSelector is null) throw new ArgumentNullException(nameof(rightSelector));
-
             return x => x.BiMap(leftSelector, rightSelector);
         }
 
@@ -167,9 +152,6 @@ namespace FunSharp.Common
             [NotNull] Func<TLeft, TResult> leftSelector,
             [NotNull] Func<TRight, TResult> rightSelector)
         {
-            if (leftSelector is null) throw new ArgumentNullException(nameof(leftSelector));
-            if (rightSelector is null) throw new ArgumentNullException(nameof(rightSelector));
-
             return x => x.Match(leftSelector, rightSelector);
         }
 
@@ -217,9 +199,6 @@ namespace FunSharp.Common
         //--------------------------------------------------
         protected Either([NotNull] string tag)
         {
-            if (string.IsNullOrWhiteSpace(tag))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(tag));
-
             this.Tag = tag;
         }
 

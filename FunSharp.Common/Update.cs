@@ -45,8 +45,6 @@ namespace FunSharp.Common
         public static Func<Update<T>, Update<TResult>> Bind<T, TResult>(
             [NotNull] Func<T, Update<TResult>> getNextUpdate)
         {
-            if (getNextUpdate is null) throw new ArgumentNullException(nameof(getNextUpdate));
-
             return x => x.Bind(getNextUpdate);
         }
 
@@ -73,8 +71,6 @@ namespace FunSharp.Common
         public static Func<Update<T>, T> DefaultWith<T>(
             [NotNull] T defaultValue)
         {
-            if (defaultValue == null) throw new ArgumentNullException(nameof(defaultValue));
-
             return x => x.DefaultWith(defaultValue);
         }
 
@@ -89,8 +85,6 @@ namespace FunSharp.Common
         public static Func<Update<T>, Update<T>> Filter<T>(
             [NotNull] Func<T, bool> predicate)
         {
-            if (predicate is null) throw new ArgumentNullException(nameof(predicate));
-
             return x => x.Filter(predicate);
         }
 
@@ -118,8 +112,6 @@ namespace FunSharp.Common
         public static Func<Update<T>, Update<TResult>> Map<T, TResult>(
             [NotNull] Func<T, TResult> valueSelector)
         {
-            if (valueSelector is null) throw new ArgumentNullException(nameof(valueSelector));
-
             return x => x.Map(valueSelector);
         }
 
@@ -136,10 +128,6 @@ namespace FunSharp.Common
             [NotNull] Func<TResult> ignoreSelector,
             [NotNull] Func<TResult> clearSelector)
         {
-            if (setSelector is null) throw new ArgumentNullException(nameof(setSelector));
-            if (ignoreSelector is null) throw new ArgumentNullException(nameof(ignoreSelector));
-            if (clearSelector is null) throw new ArgumentNullException(nameof(clearSelector));
-
             return x => x.Match(setSelector, ignoreSelector, clearSelector);
         }
 
@@ -206,9 +194,6 @@ namespace FunSharp.Common
         //--------------------------------------------------
         protected Update([NotNull] string tag)
         {
-            if (string.IsNullOrWhiteSpace(tag))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(tag));
-
             this.Tag = tag;
         }
 
