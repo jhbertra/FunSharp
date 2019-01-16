@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 namespace FunSharp.Common
 {
 
-    public static partial class OptionExtensions
+    public static partial class ListExtensions
     {
 
         //--------------------------------------------------
@@ -15,17 +15,6 @@ namespace FunSharp.Common
             [NotNull] Func<T1, T2> valueSelector)
         {
             return list.Map(valueSelector);
-        }
-
-
-        //--------------------------------------------------
-        /// <inheritdoc cref="Bind{T,TResult}"/>
-        [NotNull]
-        public static List<T2> SelectMany<T1, T2>(
-            [NotNull] this List<T1> list,
-            [NotNull] Func<T1, List<T2>> getNextOption)
-        {
-            return list.Bind(getNextOption);
         }
 
 

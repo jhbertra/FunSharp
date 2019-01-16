@@ -21,17 +21,6 @@ namespace FunSharp.Common
         //--------------------------------------------------
         /// <inheritdoc cref="BindRight{TLeft,TRight1,TRight2}"/>
         [NotNull]
-        public static Either<TLeft, TRight2> SelectMany<TLeft, TRight1, TRight2>(
-            [NotNull] this Either<TLeft, TRight1> either,
-            [NotNull] Func<TRight1, Either<TLeft, TRight2>> getNextOption)
-        {
-            return either.BindRight(getNextOption);
-        }
-
-
-        //--------------------------------------------------
-        /// <inheritdoc cref="BindRight{TLeft,TRight1,TRight2}"/>
-        [NotNull]
         public static Either<TLeft, TRight2> SelectMany<TLeft, TRight1, TRightIntermediate, TRight2>(
             [NotNull] this Either<TLeft, TRight1> either,
             [NotNull] Func<TRight1, Either<TLeft, TRightIntermediate>> getNextOption,

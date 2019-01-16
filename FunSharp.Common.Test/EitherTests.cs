@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 
 namespace FunSharp.Common.Test
@@ -5,6 +8,54 @@ namespace FunSharp.Common.Test
 
     public static class EitherTests
     {
+
+        [Test]
+        public static void ArgumentExceptionTests()
+        {
+            var either = Either.Right(1, new TypeHint<string>());
+            var invalid = new EitherInvalid<string, int>();
+            // ReSharper disable AssignNullToNotNullAttribute
+            Assert.Throws<ArgumentNullException>(() => Either.Left(default(string), new TypeHint<int>()));
+            Assert.Throws<ArgumentNullException>(() => Either.Right(default(string), new TypeHint<int>()));
+            // ReSharper disable ReturnValueOfPureMethodIsNotUsed
+            Assert.Throws<ArgumentNullException>(() => default(Either<string, int>).ToLeftEnumerable().ToArray());
+            Assert.Throws<ArgumentNullException>(() => default(Either<string, int>).ToRightEnumerable().ToArray());
+            Assert.Throws<ArgumentNullException>(() => default(Either<string, int>).ToLeftOption());
+            Assert.Throws<ArgumentNullException>(() => default(Either<string, int>).ToRightOption());
+            Assert.Throws<ArgumentNullException>(() => default(Either<string, int>).Flip());
+            Assert.Throws<ArgumentOutOfRangeException>(() => invalid.Flip());
+            Assert.Throws<ArgumentNullException>(() => default(Either<string, int>).BindLeft(x => Either.Left(x, new TypeHint<int>())));
+            Assert.Throws<ArgumentNullException>(() => either.BindLeft<string, bool, int>(null));
+            Assert.Throws<ArgumentOutOfRangeException>(() => invalid.BindLeft(x => Either.Left(x, new TypeHint<int>())));
+            Assert.Throws<ArgumentNullException>(() => default(Either<string, int>).BindRight(x => Either.Right(x, new TypeHint<string>())));
+            Assert.Throws<ArgumentNullException>(() => either.BindRight<string, int, bool>(null));
+            Assert.Throws<ArgumentOutOfRangeException>(() => invalid.BindRight(x => Either.Right(x, new TypeHint<string>())));
+            Assert.Throws<ArgumentNullException>(() => default(Either<string, int>).DefaultLeftWith(string.Empty));
+            Assert.Throws<ArgumentNullException>(() => either.DefaultLeftWith(null));
+            Assert.Throws<ArgumentOutOfRangeException>(() => invalid.DefaultLeftWith(string.Empty));
+            Assert.Throws<ArgumentNullException>(() => default(Either<string, string>).DefaultRightWith(string.Empty));
+            Assert.Throws<ArgumentNullException>(() => either.Flip().DefaultRightWith(null));
+            Assert.Throws<ArgumentOutOfRangeException>(() => invalid.DefaultRightWith(1));
+            Assert.Throws<ArgumentNullException>(() => default(Either<string, int>).MapLeft(x => x));
+            Assert.Throws<ArgumentNullException>(() => either.MapLeft<string, bool, int>(null));
+            Assert.Throws<ArgumentOutOfRangeException>(() => invalid.MapLeft(x => x));
+            Assert.Throws<ArgumentNullException>(() => default(Either<string, int>).MapRight(x => x));
+            Assert.Throws<ArgumentNullException>(() => either.MapRight<string, int, bool>(null));
+            Assert.Throws<ArgumentOutOfRangeException>(() => invalid.MapRight(x => x));
+            Assert.Throws<ArgumentNullException>(() => default(Either<string, int>).BiMap(x => x, x => x));
+            Assert.Throws<ArgumentNullException>(() => either.BiMap<string, string, int, int>(null, x => x));
+            Assert.Throws<ArgumentNullException>(() => either.BiMap<string, string, int, int>(x => x, null));
+            Assert.Throws<ArgumentOutOfRangeException>(() => invalid.BiMap(x => x, x => x));
+            Assert.Throws<ArgumentNullException>(() => default(Either<string, int>).Match(x => 0, x => 0));
+            Assert.Throws<ArgumentNullException>(() => either.Match(null, x => 0));
+            Assert.Throws<ArgumentNullException>(() => either.Match(x => 0, null));
+            Assert.Throws<ArgumentOutOfRangeException>(() => invalid.Match(x => 0, x => 0));
+            Assert.Throws<ArgumentNullException>(() => either.SelectMany<string, int, bool, bool>(null, (i, b) => b));
+            Assert.Throws<ArgumentNullException>(() => either.SelectMany<string, int, bool, bool>(x => Either.Right(x == 0, new TypeHint<string>()), null));
+            // ReSharper restore ReturnValueOfPureMethodIsNotUsed
+            // ReSharper restore AssignNullToNotNullAttribute
+        }
+            
 
         [TestCase(1, 2, ExpectedResult = false, TestName = "Equals: Left A == Left B => false")]
         [TestCase(1, 1, ExpectedResult = true, TestName = "Equals: Left A == Left A => true")]
@@ -167,6 +218,35 @@ namespace FunSharp.Common.Test
         }
 
 
+        [TestCase(1, ExpectedResult = "Left(1)")]
+        [TestCase("Foo", ExpectedResult = "Right(3)")]
+        public static string SelectTests(object val)
+        {
+            return (from x in val is int a
+                        ? Either<int, string>.Left(a)
+                        : Either<int, string>.Right((string) val)
+                    select x.Length)
+                .ToString();
+        }
+
+
+        [TestCase(1, true, ExpectedResult = "Left(1)")]
+        [TestCase(1, false, ExpectedResult = "Left(1)")]
+        [TestCase("Foo", true, ExpectedResult = "Left(3)")]
+        [TestCase("Foo", false, ExpectedResult = "Right(False)")]
+        public static string SelectManyTests(object val, bool returnLeft)
+        {
+            return (from x in val is int a
+                        ? Either<int, string>.Left(a)
+                        : Either<int, string>.Right((string) val)
+                    from y in returnLeft
+                        ? Either.Left(x.Length, new TypeHint<bool>())
+                        : Either.Right(x.Length == 0, new TypeHint<int>())
+                    select y)
+                .ToString();
+        }
+
+
         [TestCase(1, ExpectedResult = "Some(1)")]
         [TestCase("Foo", ExpectedResult = "None")]
         public static string ToLeftOptionTests(object val)
@@ -212,6 +292,20 @@ namespace FunSharp.Common.Test
                     : Either<int, string>.Right((string) val))
                 .ToRightEnumerable()
                 .Pipe(x => $"[{string.Join(", ", x)}]");
+        }
+        
+        private sealed class EitherInvalid<T1, T2> : Either<T1, T2>
+        {
+
+            public EitherInvalid() : base("Invalid")
+            {
+            }
+
+            protected override IEnumerable<(string FieldName, object FieldValue)> GetFields()
+            {
+                yield break;
+            }
+
         }
 
     }

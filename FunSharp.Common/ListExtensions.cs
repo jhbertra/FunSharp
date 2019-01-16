@@ -28,7 +28,8 @@ namespace FunSharp.Common
             var newList = List<TResult>.Empty;
             while (list is ListCons<T> cons)
             {
-                newList = newList + getSubList(cons.Head);
+                var subList = getSubList(cons.Head);
+                newList = newList + subList;
                 list = cons.Tail;
             }
 

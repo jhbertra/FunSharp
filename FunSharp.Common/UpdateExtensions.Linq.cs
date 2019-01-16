@@ -21,17 +21,6 @@ namespace FunSharp.Common
         //--------------------------------------------------
         /// <inheritdoc cref="Bind{T,TResult}"/>
         [NotNull]
-        public static Update<T2> SelectMany<T1, T2>(
-            [NotNull] this Update<T1> option,
-            [NotNull] Func<T1, Update<T2>> getNextUpdate)
-        {
-            return option.Bind(getNextUpdate);
-        }
-
-
-        //--------------------------------------------------
-        /// <inheritdoc cref="Bind{T,TResult}"/>
-        [NotNull]
         public static Update<T2> SelectMany<T1, TIntermediate, T2>(
             [NotNull] this Update<T1> option,
             [NotNull] Func<T1, Update<TIntermediate>> getNextUpdate,

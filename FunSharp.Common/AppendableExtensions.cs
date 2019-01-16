@@ -24,7 +24,7 @@ namespace FunSharp.Common
             if (empty == null) throw new ArgumentNullException(nameof(empty));
             if (times <= 0) throw new ArgumentOutOfRangeException(nameof(times));
 
-            return Appendable.Concat(empty, Enumerable.Repeat(empty, times));
+            return Appendable.Concat(empty, Enumerable.Repeat(item, times));
         }
 
     }

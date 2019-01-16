@@ -220,10 +220,7 @@ namespace FunSharp.Common
         /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
-            if (this is UpdateSet<T> some)
-            {
-                yield return some.Value;
-            }
+            if (this is UpdateSet<T> some) yield return some.Value;
         }
 
 

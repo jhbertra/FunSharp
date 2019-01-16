@@ -204,10 +204,7 @@ namespace FunSharp.Common
         /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
-            if (this is OptionSome<T> some)
-            {
-                yield return some.Value;
-            }
+            if (this is OptionSome<T> some) yield return some.Value;
         }
 
 
