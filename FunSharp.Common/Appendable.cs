@@ -34,7 +34,6 @@ namespace FunSharp.Common
         /// <inheritdoc cref="Concat{T}(T,System.Collections.Generic.IEnumerable{T})" />
         public static T Concat<T>([NotNull] T empty, [NotNull] params T[] items) where T : IAppendable<T>
         {
-            if (empty == null) throw new ArgumentNullException(nameof(empty));
             if (items is null) throw new ArgumentNullException(nameof(items));
 
             return Appendable.Concat(empty, items.AsEnumerable());

@@ -22,7 +22,7 @@ namespace FunSharp.Common
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
             if (empty == null) throw new ArgumentNullException(nameof(empty));
-            if (times <= 0) throw new ArgumentOutOfRangeException(nameof(times));
+            if (times < 0) throw new ArgumentOutOfRangeException(nameof(times));
 
             return Appendable.Concat(empty, Enumerable.Repeat(item, times));
         }
